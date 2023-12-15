@@ -32,7 +32,7 @@ steps:
   - name: build-vk-bot
     image: plugins/docker
     settings:
-      dockerfile: vk-vot/Dockerfile.no-buildkit
+      dockerfile: vk-bot/Dockerfile.no-buildkit
       context: vk-bot
       repo: 0xb1b1/misis-cjsc-vk-bot-lct-yakutia-2023
       tags: latest
