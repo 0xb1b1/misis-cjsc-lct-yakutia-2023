@@ -51,7 +51,7 @@ def run():
                 )
             except ValidationError:
                 logger.warning(
-                    f"Validation failed for event object (type: MESSAGE_NEW: {event}"
+                    f"Validation failed for event object (type: MESSAGE_NEW: {event})"  # noqa: E501
                 )
                 continue
 
