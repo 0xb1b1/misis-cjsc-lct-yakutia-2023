@@ -49,25 +49,25 @@ steps:
         # yamllint disable-line rule:anchors
         - "vk-bot-master"
 
-  - name: build-ml
-    image: plugins/docker
-    settings:
-      dockerfile: ml/Dockerfile.no-buildkit
-      context: ml
-      repo: 0xb1b1/misis-cjsc-ml-lct-yakutia-2023
-      tags: latest
-      username:
-        from_secret: docker_username
-      password:
-        from_secret: docker_password
-    when:
-      status: [success, changed]
-      event:
-        - push
-      branch:
-        - main
-        # yamllint disable-line rule:anchors
-        - "ml-master"
+  # - name: build-ml
+  #   image: plugins/docker
+  #   settings:
+  #     dockerfile: ml/Dockerfile.no-buildkit
+  #     context: ml
+  #     repo: 0xb1b1/misis-cjsc-ml-lct-yakutia-2023
+  #     tags: latest
+  #     username:
+  #       from_secret: docker_username
+  #     password:
+  #       from_secret: docker_password
+  #   when:
+  #     status: [success, changed]
+  #     event:
+  #       - push
+  #     branch:
+  #       - main
+  #       # yamllint disable-line rule:anchors
+  #       - "ml-master"
 
   - name: build_notification
     image: appleboy/drone-discord
