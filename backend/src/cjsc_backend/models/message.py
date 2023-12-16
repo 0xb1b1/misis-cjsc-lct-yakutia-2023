@@ -26,7 +26,7 @@ class Message(BaseModel):
     )
 
     timestamp: datetime = Field(
-        default=datetime.now(),
+        default=datetime.utcnow(),
         description="Timestamp of the message",
     )
 
