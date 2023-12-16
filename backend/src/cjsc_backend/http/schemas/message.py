@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field
 from datetime import datetime
 
 from cjsc_backend.models.message import \
-    MessagePlatform
+    MessagePlatform, MessageRequestType
 
 
 class MessageSchema(BaseModel):
@@ -27,4 +27,9 @@ class MessageSchema(BaseModel):
 
     response_text: str | None = Field(
         description="Response message text. None if of Request type",
+    )
+
+    request_type: MessageRequestType | None = Field(
+        default=None,
+        description="Request type as detected by ML",
     )

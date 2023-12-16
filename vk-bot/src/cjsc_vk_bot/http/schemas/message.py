@@ -12,6 +12,16 @@ class MessagePlatform(str, Enum):
     TG = "tg"
 
 
+class MessageRequestType(str, Enum):
+    CHAT_BOT = "chat_bot"
+    EVENTS = "events"
+    WEATHER = "weather"
+    TRAFFIC_JAM = "traffic_jam"
+    MINI_APP = "mini_app"
+    SOCIAL_NETWORKS = "social_networks"
+    TRASH = "trash"
+
+
 class MessageSchema(BaseModel):
     platform: MessagePlatform = Field(
         default=MessagePlatform.VK,
@@ -35,5 +45,7 @@ class MessageSchema(BaseModel):
         description="Response message text. None if of Request type",
     )
 
-    class Config:
-        use_enum_values = True
+    request_type: MessageRequestType | None = Field(
+        default=None,
+        description="Request type as detected by ML",
+    )
