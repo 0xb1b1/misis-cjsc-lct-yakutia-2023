@@ -33,3 +33,6 @@ class MessageSchema(BaseModel):
         default=None,
         description="Request type as detected by ML",
     )
+
+    class Config:
+        use_enum_values = True
