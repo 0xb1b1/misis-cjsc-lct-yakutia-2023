@@ -4,9 +4,10 @@ This module handles saving message queries to the database.
 
 All queries to ML models are processed via ml (branch ml-master).
 """
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from loguru import logger
 from pymongo.errors import DuplicateKeyError
+from collections import deque
 
 from cjsc_backend.http.schemas.message import \
     MessageSchema
@@ -32,6 +33,10 @@ router = APIRouter(
 repo = MessageRepo(database=backend_db)
 
 
+# {"platform@user_id": <deque maxlen=3>}
+chat_history: dict[str, deque] = dict()
+
+
 @router.post(
     "/save",
     response_model=MessageSchema,
@@ -44,6 +49,7 @@ def save_message(msg: MessageSchema) -> Message:
         timestamp=msg.timestamp,
         request_text=msg.request_text,
         response_text=msg.response_text,
+        request_type=msg.request_type,
     )
 
     logger.debug(
@@ -54,5 +60,9 @@ def save_message(msg: MessageSchema) -> Message:
     except DuplicateKeyError:
         logger.warning(
             f"Duplicate key while saving msg to DB: {db_message}",
+        )
+        return HTTPException(
+            status_code=409,
+            detail="This record already exists",
         )
     return db_message

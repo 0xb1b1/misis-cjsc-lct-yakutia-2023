@@ -48,6 +48,7 @@ def run():
                     timestamp=message.timestamp,
                     request_text=message.text,
                     response_text=None,
+                    request_type=None,
                 )
             except ValidationError:
                 logger.warning(

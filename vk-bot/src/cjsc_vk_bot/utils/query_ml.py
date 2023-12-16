@@ -42,7 +42,7 @@ def query_ml(msg: MessageSchema) -> MessageSchema:
     except Exception as exc:
         logger.error(
             f"An error occured while parsing ML Response: \
-{response_raw.status_code=}, {response_raw.content}"
+({response_raw.status_code=}, {response_raw.content}), {exc}"
         )
         return MessageSchema(
             platform=msg.platform,
@@ -50,7 +50,8 @@ def query_ml(msg: MessageSchema) -> MessageSchema:
             timestamp=msg.timestamp,
             request_text=None,
             response_text="Кажется что-то сломалось.\n\
-Но мы уже знаем и стараемся починить — напишите нам позже"
+Но мы уже знаем и стараемся починить — напишите нам позже",
+            request_type=None,
         )
 
     logger.debug(
