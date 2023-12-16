@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "misis-cjsc-lct-yakutia-2023-backend"
+packages = [{include = "cjsc_vk_bot", from="src"}]
+version = "0.0.1"
+description = ""
+authors = ["0xb1b1 <hello@axelreitenbach.online>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pydantic = "^2.5.2"
+loguru = "^0.7.2"
+pydantic-mongo = "^2.0.3"
+sentry-sdk = {extras = ["fastapi", "loguru", "pymongo"], version = "^1.38.0"}
+requests = "^2.31.0"
+vk-api = "^11.9.9"
+
+[tool.poetry.scripts]
+start = "cjsc_vk_bot.main:run"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.3"
+ipykernel = "^6.27.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

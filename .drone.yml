@@ -29,6 +29,26 @@ steps:
         # yamllint disable-line rule:anchors
         - "backend-master"
 
+  - name: build-vk-bot
+    image: plugins/docker
+    settings:
+      dockerfile: vk-bot/Dockerfile.no-buildkit
+      context: vk-bot
+      repo: 0xb1b1/misis-cjsc-vk-bot-lct-yakutia-2023
+      tags: latest
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+    when:
+      status: [success, changed]
+      event:
+        - push
+      branch:
+        - main
+        # yamllint disable-line rule:anchors
+        - "vk-bot-master"
+
   - name: build_notification
     image: appleboy/drone-discord
     settings:
@@ -65,3 +85,4 @@ steps:
         - "*-master"
     depends_on:
       - build-backend
+      - build-vk-bot
