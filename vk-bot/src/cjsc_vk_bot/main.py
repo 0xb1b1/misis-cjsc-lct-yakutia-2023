@@ -4,9 +4,13 @@ from loguru import logger
 import vk_api
 from vk_api.bot_longpoll import VkBotEventType, VkBotLongPoll
 from vk_api.utils import get_random_id
+from pydantic import ValidationError
 
 from cjsc_vk_bot import config
 from cjsc_vk_bot.models.vk_message import vk_message_from_event
+from cjsc_vk_bot.utils.query_ml import query_ml
+from cjsc_vk_bot.http.schemas.message import \
+    MessageSchema, MessagePlatform
 
 vk_session = vk_api.VkApi(token=config.VK_TOKEN)
 vk = vk_session.get_api()
@@ -37,8 +41,22 @@ def run():
             logger.info(
                 f"Message from {message.from_user.id}: {message.text}",
             )
+            try:
+                msg = MessageSchema(
+                    platform=MessagePlatform.VK,
+                    user_id=str(message.from_user.id),
+                    timestamp=message.timestamp,
+                    request_text=message.text,
+                    response_text=None,
+                )
+            except ValidationError:
+                logger.warning(
+                    f"Validation failed for event object (type: MESSAGE_NEW: {event})"  # noqa: E501
+                )
+                continue
+
             vk.messages.send(
-                message='Test message',
+                message=query_ml(msg).response_text,
                 peer_id=message.peer_id,
                 random_id=get_random_id(),
             )
@@ -46,3 +64,7 @@ def run():
             logger.critical(
                 f"Other message type: {event.type}"
             )
+
+
+if __name__ == "__main__":
+    run()

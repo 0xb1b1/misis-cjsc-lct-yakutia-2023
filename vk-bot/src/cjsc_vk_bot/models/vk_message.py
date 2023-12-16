@@ -12,7 +12,7 @@ class VkMessageUser(BaseModel):
 
 class VkMessage(BaseModel):
     from_user: VkMessageUser
-    date: datetime
+    timestamp: datetime
     text: str
     peer_id: int
 
@@ -23,7 +23,7 @@ def vk_message_from_event(event: VkBotMessageEvent):
         from_user=VkMessageUser(
             id=message_obj["from_id"],
         ),
-        date=datetime.utcfromtimestamp(message_obj["date"]),
+        timestamp=datetime.utcfromtimestamp(message_obj["date"]),
         text=message_obj["text"],
         peer_id=message_obj["peer_id"],
     )

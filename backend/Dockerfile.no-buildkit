@@ -14,9 +14,11 @@ RUN poetry install --without dev --no-root
 
 FROM python:3.12-slim-bookworm
 
-ENV CJSC_VK_BOT_LOGGING_LEVEL \
-    CJSC_VK_BOT_ML_URL \
-    CJSC_VK_BOT_VK_TOKEN
+ENV CJSC_BACKEND_LOGGING_LEVEL \
+    CJSC_BACKEND_WEBSERVER_HOST \
+    CJSC_BACKEND_WEBSERVER_PORT \
+    CJSC_BACKEND_MONGO_URL \
+    CJSC_BACKEND_MONGO_BACKEND_DB
 
 WORKDIR /srv/app
 
@@ -30,4 +32,4 @@ WORKDIR /srv/app/src
 
 COPY ./src ./
 
-ENTRYPOINT ["python", "-m", "cjsc_vk_bot.main"]
+ENTRYPOINT ["python", "-m", "cjsc_backend.main"]
