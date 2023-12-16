@@ -1,4 +1,4 @@
-FROM python:3.12-bookworm AS builder
+FROM python:3.10-bookworm AS builder
 
 RUN pip install --no-cache-dir poetry==1.4.2
 
@@ -13,7 +13,7 @@ COPY pyproject.toml poetry.lock ./
 
 RUN --mount=type=cache,target=$POETRY_CACHE_DIR poetry install --without dev --no-root
 
-FROM python:3.12-slim-bookworm
+FROM python:3.10-slim-bookworm
 
 ENV CJSC_ML_LOGGING_LEVEL \
     CJSC_ML_WEBSERVER_HOST \
