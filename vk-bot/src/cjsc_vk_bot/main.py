@@ -64,3 +64,7 @@ def run():
             logger.critical(
                 f"Other message type: {event.type}"
             )
+
+
+if __name__ == "__main__":
+    run()
