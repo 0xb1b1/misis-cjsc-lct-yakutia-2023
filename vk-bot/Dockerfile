@@ -16,6 +16,7 @@ RUN --mount=type=cache,target=$POETRY_CACHE_DIR poetry install --without dev --n
 FROM python:3.12-slim-bookworm
 
 ENV CJSC_VK_BOT_LOGGING_LEVEL \
+    CJSC_VK_BOT_ML_URL \
     CJSC_VK_BOT_VK_TOKEN
 
 WORKDIR /srv/app
