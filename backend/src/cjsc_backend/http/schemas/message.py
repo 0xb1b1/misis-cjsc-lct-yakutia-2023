@@ -1,20 +1,9 @@
 #!/usr/bin/env python3
 from pydantic import BaseModel, Field
 from datetime import datetime
-from enum import Enum
 
 from cjsc_backend.models.message import \
-    MessagePlatform
-
-
-class MessageRequestType(str, Enum):
-    CHAT_BOT = "chat_bot"
-    EVENTS = "events"
-    WEATHER = "weather"
-    TRAFFIC_JAM = "traffic_jam"
-    MINI_APP = "mini_app"
-    SOCIAL_NETWORKS = "social_networks"
-    TRASH = "trash"
+    MessagePlatform, MessageRequestType
 
 
 class MessageSchema(BaseModel):
