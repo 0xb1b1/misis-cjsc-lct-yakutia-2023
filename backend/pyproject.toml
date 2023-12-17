@@ -18,6 +18,8 @@ fastapi-jwt = "^0.2.0"
 pydantic-mongo = "^2.0.3"
 sentry-sdk = {extras = ["fastapi", "loguru", "pymongo"], version = "^1.38.0"}
 requests = "^2.31.0"
+yandexfreetranslate = "^1.5"
+pysocks = "^1.7.1"
 
 [tool.poetry.scripts]
 start = "cjsc_backend.main:run"
