@@ -6,12 +6,12 @@ from fastapi import APIRouter, HTTPException
 from loguru import logger
 
 from cjsc_backend.http.schemas.event import \
-    CityEvent, CityEvents
+    CityEventSchema, CityEventsSchema
 
 from cjsc_backend.utils.events_parser import \
     parse_events
 
-events = CityEvents(
+events = CityEventsSchema(
     events=parse_events(),
 )
 
@@ -27,7 +27,7 @@ router = APIRouter(
 
 @router.get(
     "/get_events",
-    response_model=CityEvents,
+    response_model=CityEventsSchema,
 )
 def get_city_events():
     return events
@@ -38,6 +38,6 @@ def get_city_events():
 )
 def reload_city_events():
     global events
-    events = CityEvents(
+    events = CityEventsSchema(
         events=parse_events(),
     )

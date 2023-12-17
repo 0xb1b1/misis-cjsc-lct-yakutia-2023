@@ -16,6 +16,9 @@ from cjsc_vk_bot.http.schemas.message import \
 from cjsc_vk_bot.utils.events_msg import \
     create_events_message
 
+from cjsc_vk_bot.utils.weather_msg import \
+    get_weather_message
+
 vk_session = vk_api.VkApi(token=config.VK_TOKEN)
 vk = vk_session.get_api()
 longpoll = VkBotLongPoll(vk_session, 223871238)
@@ -61,18 +64,102 @@ def run():
                 )
                 continue
 
-            answer_msg = query_ml(msg, user_prefs).response_text
+            # --- Commands ---
+            if msg.request_text == "/lang":
+                continue
+
+            # --- Events ---
+            msg_lower = msg.request_text.lower()
+            if (msg_lower in [
+                "новости",
+                "новости города",
+                "новости мирного",
+                "новости в городе",
+                "новости в мирном",
+                "события",
+                "события города",
+                "события мирного",
+                "события в городе",
+                "события в мирном",
+            ]) or (
+                (
+                    "новости" in msg_lower or
+                    "события" in msg_lower
+                ) and (
+                    "мирном" in msg_lower or
+                    "городе" in msg_lower or
+                    "мирного" in msg_lower or
+                    "города" in msg_lower
+                )
+            ):
+                vk.messages.send(
+                    message=create_events_message().response_text,
+                    peer_id=message.peer_id,
+                    random_id=get_random_id(),
+                )
+                continue
+
+            # --- Weather ---
+            if (msg_lower in [
+                "погода",
+                "погода в городе",
+                "погода в мирном",
+                "погода мирного",
+                "прогноз погоды",
+                "будет ли дождь?",
+                "будет ли снег?",
+                "будет дождь?",
+                "будет снег?",
+                "когда дождь?",
+                "когда снег?",
+                "когда будет дождь?",
+                "когда будет снег?",
+                "когда потеплеет?",
+                "осадки",
+                "осадки в городе",
+                "осадки город",
+                "осадки мирный",
+                "осадки в мирном",
+            ]) or (
+                (
+                    (
+                        "погода" in msg_lower or
+                        "дождь" in msg_lower or
+                        "снег" in msg_lower or
+                        "солнце" in msg_lower or
+                        "ураган" in msg_lower or
+                        "буря" in msg_lower or
+                        "ветер" in msg_lower or
+                        "ветренно" in msg_lower or
+                        "осадки" in msg_lower
+                    ) and (
+                        "мирный" in msg_lower or
+                        "город" in msg_lower or
+                        "округ" in msg_lower or
+                        "регион" in msg_lower
+                    )
+                )
+            ):
+                vk.messages.send(
+                    message=get_weather_message(msg).response_text,
+                    peer_id=message.peer_id,
+                    random_id=get_random_id(),
+                )
+                continue
+
+            # --- ML ---
+            answer_msg = query_ml(msg, user_prefs)
             # --- Events ---
             if answer_msg.request_type == MessageRequestType.EVENTS:
                 vk.messages.send(
-                    message=create_events_message(),
+                    message=create_events_message().response_text,
                     peer_id=message.peer_id,
                     random_id=get_random_id(),
                 )
 
             # Normal messages
             vk.messages.send(
-                message=answer_msg,
+                message=answer_msg.response_text,
                 peer_id=message.peer_id,
                 random_id=get_random_id(),
             )

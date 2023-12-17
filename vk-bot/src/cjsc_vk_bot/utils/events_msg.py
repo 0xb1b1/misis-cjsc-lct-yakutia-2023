@@ -7,14 +7,14 @@ from datetime import datetime, UTC
 from cjsc_vk_bot import config
 
 from cjsc_vk_bot.http.schemas.event import \
-    CityEvent, CityEvents
+    CityEventSchema, CityEventsSchema
 
-from cjsc_backend.http.schemas.message import \
+from cjsc_vk_bot.http.schemas.message import \
     MessagePlatform, MessageRequestType, \
     MessageSchema
 
 
-def get_events() -> CityEvents:
+def get_events() -> CityEventsSchema:
     logger.info("Getting City Events from Backend")
     r = requests.get(
         urlparse.urljoin(
@@ -28,18 +28,18 @@ def get_events() -> CityEvents:
             f"Failed to fetch news from backend \
 ({r.status_code=}, {r.content=}), returning empty list"
         )
-        return CityEvents(
+        return CityEventsSchema(
             events=[],
         )
 
     try:
-        events = CityEvents.model_validate_json(r.content)
+        events = CityEventsSchema.model_validate_json(r.content)
     except Exception as exc:
         logger.critical(
             f"Something went wrong while parsing City Events \
 ({exc})"
         )
-        return CityEvents(
+        return CityEventsSchema(
             events=[],
         )
 

@@ -2,7 +2,7 @@
 from pydantic import BaseModel, Field
 
 
-class CityEvent(BaseModel):
+class CityEventSchema(BaseModel):
     title: str = Field(
         description="Event title",
     )
@@ -16,7 +16,7 @@ class CityEvent(BaseModel):
     )
 
 
-class CityEvents(BaseModel):
-    events: list[CityEvent] = Field(
+class CityEventsSchema(BaseModel):
+    events: list[CityEventSchema] = Field(
         description="List of city events parsed at backend startup",
     )
