@@ -11,7 +11,10 @@ from cjsc_vk_bot.models.vk_message import vk_message_from_event
 from cjsc_vk_bot.utils.query_ml import query_ml, \
     get_user_prefs
 from cjsc_vk_bot.http.schemas.message import \
-    MessageSchema, MessagePlatform
+    MessageSchema, MessagePlatform, MessageRequestType
+
+from cjsc_vk_bot.utils.events_msg import \
+    create_events_message
 
 vk_session = vk_api.VkApi(token=config.VK_TOKEN)
 vk = vk_session.get_api()
@@ -58,8 +61,18 @@ def run():
                 )
                 continue
 
+            answer_msg = query_ml(msg, user_prefs).response_text
+            # --- Events ---
+            if answer_msg.request_type == MessageRequestType.EVENTS:
+                vk.messages.send(
+                    message=create_events_message(),
+                    peer_id=message.peer_id,
+                    random_id=get_random_id(),
+                )
+
+            # Normal messages
             vk.messages.send(
-                message=query_ml(msg, user_prefs).response_text,
+                message=answer_msg,
                 peer_id=message.peer_id,
                 random_id=get_random_id(),
             )
