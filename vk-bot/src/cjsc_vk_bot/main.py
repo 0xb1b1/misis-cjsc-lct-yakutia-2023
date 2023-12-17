@@ -61,7 +61,7 @@ def run():
                 )
                 continue
 
-            answer_msg = query_ml(msg, user_prefs).response_text
+            answer_msg = query_ml(msg, user_prefs)
             # --- Events ---
             if answer_msg.request_type == MessageRequestType.EVENTS:
                 vk.messages.send(
@@ -72,7 +72,7 @@ def run():
 
             # Normal messages
             vk.messages.send(
-                message=answer_msg,
+                message=answer_msg.response_text,
                 peer_id=message.peer_id,
                 random_id=get_random_id(),
             )
