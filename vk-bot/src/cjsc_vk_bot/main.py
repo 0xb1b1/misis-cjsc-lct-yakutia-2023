@@ -61,6 +61,38 @@ def run():
                 )
                 continue
 
+            # --- Commands ---
+            if msg.request_text == "/lang":
+                continue
+
+            # --- Events ---
+            msg_lower = msg.request_text.lower()
+            if (msg_lower in [
+                "новости",
+                "новости в городе"
+                "новости в мирном"
+                "события",
+                "события в городе",
+                "события в мирном",
+            ]) or (
+                (
+                    "новости" in msg_lower or
+                    "события" in msg_lower
+                ) and (
+                    " в " in msg_lower
+                ) and (
+                    "мирном" in msg_lower or
+                    "городе" in msg_lower
+                )
+            ):
+                vk.messages.send(
+                    message=create_events_message().response_text,
+                    peer_id=message.peer_id,
+                    random_id=get_random_id(),
+                )
+                continue
+
+            # --- ML ---
             answer_msg = query_ml(msg, user_prefs)
             # --- Events ---
             if answer_msg.request_type == MessageRequestType.EVENTS:
