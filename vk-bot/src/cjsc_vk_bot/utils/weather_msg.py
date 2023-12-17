@@ -14,63 +14,39 @@ from cjsc_vk_bot.http.schemas.message import \
     MessageSchema
 
 
-def get_events() -> CityEventsSchema:
-    logger.info("Getting City Events from Backend")
-    r = requests.get(
+def get_weather_message(msg: MessageSchema) -> MessageSchema:
+    logger.debug("Quering Backend for Weather Message")
+
+    response_raw = requests.post(
         urlparse.urljoin(
             config.BACKEND_URL,
-            "/events/get_events",
-        )
+            "/weather/get_weather_message",
+        ),
+        data=msg,
+    )
+    logger.debug(
+        f"Received a JSON response: {response_raw.content}"
     )
 
-    if r.status_code != 200:
-        logger.critical(
-            f"Failed to fetch news from backend \
-({r.status_code=}, {r.content=}), returning empty list"
+    if response_raw.status_code != 200:
+        logger.warning(
+            f"Weather message request to Backend status code != 200: \
+{response_raw.status_code}"
         )
-        return CityEventsSchema(
-            events=[],
-        )
+
+        return msg
 
     try:
-        events = CityEventsSchema.model_validate_json(r.content)
+        response = MessageSchema.model_validate_json(response_raw.content)
     except Exception as exc:
-        logger.critical(
-            f"Something went wrong while parsing City Events \
-({exc})"
+        logger.error(
+            f"An error occured while parsing Backend Response: \
+({response_raw.status_code=}, {response_raw.content}), {exc}"
         )
-        return CityEventsSchema(
-            events=[],
-        )
+        return msg
 
     logger.debug(
-        f"Got City Events from Backend: {events}"
+        f"Parsed a response from Backend Weather Data: {response}"
     )
 
-    return events
-
-
-def create_events_message() -> MessageSchema:
-    events = get_events().events
-    if len(events) == 0:
-        return MessageSchema(
-            platform=MessagePlatform.VK,
-            user_id="nullstring",
-            timestamp=datetime.now(UTC),
-            request_text=None,
-            response_text="К сожалению, новости не найдены. \
-Пожалуйста, попробуйте позже!",
-        )
-    msg_text = "События на сегодня\n\n"
-
-    for event in events:
-        msg_text += f"{event.title}\n\n{event.description}\
-\n\n{event.link}\n---\n\n"
-
-    return MessageSchema(
-        platform=MessagePlatform.VK,
-        user_id="nullstring",
-        timestamp=datetime.now(UTC),
-        request_text=None,
-        response_text=msg_text,
-    )
+    return response

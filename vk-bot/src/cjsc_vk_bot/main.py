@@ -17,7 +17,7 @@ from cjsc_vk_bot.utils.events_msg import \
     create_events_message
 
 from cjsc_vk_bot.utils.weather_msg import \
-    create_weather_message
+    get_weather_message
 
 vk_session = vk_api.VkApi(token=config.VK_TOKEN)
 vk = vk_session.get_api()
@@ -141,7 +141,7 @@ def run():
                 )
             ):
                 vk.messages.send(
-                    message=create_weather_message().response_text,
+                    message=get_weather_message().response_text,
                     peer_id=message.peer_id,
                     random_id=get_random_id(),
                 )
