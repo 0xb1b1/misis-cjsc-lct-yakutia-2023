@@ -65,7 +65,7 @@ def run():
             # --- Events ---
             if answer_msg.request_type == MessageRequestType.EVENTS:
                 vk.messages.send(
-                    message=create_events_message(),
+                    message=create_events_message().response_text,
                     peer_id=message.peer_id,
                     random_id=get_random_id(),
                 )
