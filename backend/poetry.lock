@@ -1399,6 +1399,18 @@ test = ["pytest (>=7)"]
 zstd = ["zstandard"]
 
 [[package]]
+name = "pysocks"
+version = "1.7.1"
+description = "A Python SOCKS client module. See https://github.com/Anorov/PySocks for more information."
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+files = [
+    {file = "PySocks-1.7.1-py27-none-any.whl", hash = "sha256:08e69f092cc6dbe92a0fdd16eeb9b9ffbc13cadfe5ca4c7bd92ffb078b293299"},
+    {file = "PySocks-1.7.1-py3-none-any.whl", hash = "sha256:2725bd0a9925919b9b51739eea5f9e2bae91e83288108a9ad338b2e3a4435ee5"},
+    {file = "PySocks-1.7.1.tar.gz", hash = "sha256:3f8804571ebe159c380ac6de37643bb4685970655d3bba243530d6558b799aa0"},
+]
+
+[[package]]
 name = "pytest"
 version = "7.4.3"
 description = "pytest: simple powerful testing with Python"
@@ -2208,7 +2220,18 @@ files = [
 [package.extras]
 dev = ["black (>=19.3b0)", "pytest (>=4.6.2)"]
 
+[[package]]
+name = "yandexfreetranslate"
+version = "1.5"
+description = ""
+optional = false
+python-versions = "*"
+files = [
+    {file = "yandexfreetranslate-1.5-py3-none-any.whl", hash = "sha256:784d1155b7845cc2f6158166aba257224a99831b23d180a9b0b0388a9de9cc38"},
+    {file = "yandexfreetranslate-1.5.tar.gz", hash = "sha256:415652bca19707f5c665d5f55a7f902954ccb0596ac2abed8b0c464e06ae48e9"},
+]
+
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "df43a57ec935a4494bd85fb11a325d42c8db0073f139902dc62758afd8fd5d8a"
+content-hash = "f98a58b94abbfcaf4cc1752befdc790a36920a9d49ec1d5958b74e2ba211a5df"

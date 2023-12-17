@@ -19,6 +19,8 @@ def query_ml(msg: MessageSchema) -> MessageSchema:
     Returns:
         MessageSchema: Schema with None in request_text.
     """
+    se_link = "https://ya.ru/search/?text=" + urlparse.quote(msg.request_text)  # TODO: use the seatch link
+
     msg_json: str = json.dumps(
         msg.model_dump(),
         indent=4,
