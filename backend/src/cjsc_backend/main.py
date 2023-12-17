@@ -31,6 +31,8 @@ def run() -> None:
     logger.info("Initialized Sentry.")
 
     from cjsc_backend.http.routers.messages import router as msg_router
+    from cjsc_backend.http.routers.utils import router as utils_router
+    from cjsc_backend.http.routers.users import router as users_mouter
 
     from cjsc_backend.http.routers.signals import router as sig_router
 
@@ -49,6 +51,9 @@ def run() -> None:
 
     # Routers
     app.include_router(msg_router)
+    app.include_router(utils_router)
+    app.include_router(users_mouter)
+
     app.include_router(sig_router)
 
     logger.info(f"Starting FastAPI on port {config.WEBSERVER_PORT}.")

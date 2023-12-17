@@ -2226,12 +2226,16 @@ version = "1.5"
 description = ""
 optional = false
 python-versions = "*"
-files = [
-    {file = "yandexfreetranslate-1.5-py3-none-any.whl", hash = "sha256:784d1155b7845cc2f6158166aba257224a99831b23d180a9b0b0388a9de9cc38"},
-    {file = "yandexfreetranslate-1.5.tar.gz", hash = "sha256:415652bca19707f5c665d5f55a7f902954ccb0596ac2abed8b0c464e06ae48e9"},
-]
+files = []
+develop = false
+
+[package.source]
+type = "git"
+url = "https://github.com/0xb1b1/yandexfreetranslate.git"
+reference = "fix/lang-code-len-verification"
+resolved_reference = "27939cd81a7cfc8d9e8fab726dce3809883fcd4f"
 
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "f98a58b94abbfcaf4cc1752befdc790a36920a9d49ec1d5958b74e2ba211a5df"
+content-hash = "e293918ccce19879080bf9974bc3fb2215611d7226559ece9a8d3ea693831686"

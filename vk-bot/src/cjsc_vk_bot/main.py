@@ -8,7 +8,8 @@ from pydantic import ValidationError
 
 from cjsc_vk_bot import config
 from cjsc_vk_bot.models.vk_message import vk_message_from_event
-from cjsc_vk_bot.utils.query_ml import query_ml
+from cjsc_vk_bot.utils.query_ml import query_ml, \
+    get_user_prefs
 from cjsc_vk_bot.http.schemas.message import \
     MessageSchema, MessagePlatform
 
@@ -41,6 +42,7 @@ def run():
             logger.info(
                 f"Message from {message.from_user.id}: {message.text}",
             )
+            user_prefs = get_user_prefs(str(message.from_user.id))
             try:
                 msg = MessageSchema(
                     platform=MessagePlatform.VK,
@@ -57,7 +59,7 @@ def run():
                 continue
 
             vk.messages.send(
-                message=query_ml(msg).response_text,
+                message=query_ml(msg, user_prefs).response_text,
                 peer_id=message.peer_id,
                 random_id=get_random_id(),
             )
