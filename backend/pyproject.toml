@@ -18,6 +18,9 @@ fastapi-jwt = "^0.2.0"
 pydantic-mongo = "^2.0.3"
 sentry-sdk = {extras = ["fastapi", "loguru", "pymongo"], version = "^1.38.0"}
 requests = "^2.31.0"
+pysocks = "^1.7.1"
+yandexfreetranslate = {git = "https://github.com/0xb1b1/yandexfreetranslate.git", rev = "fix/lang-code-len-verification"}
+beautifulsoup4 = "^4.12.2"
 
 [tool.poetry.scripts]
 start = "cjsc_backend.main:run"
