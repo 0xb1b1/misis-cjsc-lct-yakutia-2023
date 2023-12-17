@@ -8,7 +8,7 @@ import re
 import pandas as pd
 import numpy as np
 from datasets import Dataset
-
+from loguru import logger
 import scipy
 import sklearn
 
@@ -192,20 +192,20 @@ class Retriever:
     def query(self, text):
         sample = self._preprocess_text(text)
         embedding = self._get_embedding(sample)
-        ood_score = self.ood_model.predict(embedding.tolist())[0]
+        ood_score = int(self.ood_model.predict(embedding.tolist())[0][0])
 
         torch.cuda.empty_cache()
 
-        if ood_score == 1:
+        if ood_score == 0:
             dictances, inds = self.index.search(embedding, k=self.k)
 
             ret = self.db.find_by(
                 {"seq_id": {"$in": inds[0].tolist()}}
             )
 
-            return mongo_to_pandas(ret)
+            return mongo_to_pandas(ret), ood_score
         else:
-            return None
+            return ood_score
 
 
 class Chat:
@@ -220,6 +220,16 @@ class Chat:
         self.generation_config = generation_config
         self.retriever = retriever
         self.k = k
+
+        self.request_type = {
+            0: 'chat_bot',
+            1: 'events',
+            2: 'weather',
+            3: 'traffic_jam',
+            4: 'mini_app',
+            5: 'social_networks',
+            6: 'trash'
+        }
 
     @staticmethod
     def _remove_punct(text):
@@ -263,19 +273,29 @@ class Chat:
         return generated
 
     def answer(self, message):
+        logger.debug(message)
+
+        torch.cuda.empty_cache()
+
         retrieved_samples = self.retriever.query(message)
 
-        if isinstance(retrieved_samples, type(None)):
-            return """
+        if isinstance(retrieved_samples, int):
+            request_type = retrieved_samples
+            # print(request_type)
+            return self.request_type[request_type], """
             Пока что я не могу ответить на данный вопрос — мне не хватает данных. Но вы можете позвонить в администрацию города Мирный или дождаться ответа оператора. 
             Телефон для связи: 8 (41136) 6-19-19
             """
 
+        retrieved_samples, request_type = retrieved_samples
+        # print(type(retrieved_samples['url'][0]))
+
         prompt = self._form_prompt(message, retrieved_samples)
 
         generated = self.generate(prompt)
+        torch.cuda.empty_cache()
         if isinstance(generated, type(None)):
-            return """Кажется что-то сломалось.
+            return self.request_type[request_type], """Кажется что-то сломалось.
                       Но мы уже знаем и стараемся починить — напишите нам позже"""
 
-        return f"{self.postprocess(generated)}\n\nНа основе документа {retrieved_samples['url'].values[0]}"
+        return self.request_type[request_type], f"{self.postprocess(generated)}\n\nНа основе документа {retrieved_samples['url'][0]}"

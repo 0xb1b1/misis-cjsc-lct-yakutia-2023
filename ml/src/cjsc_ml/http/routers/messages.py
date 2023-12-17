@@ -2,15 +2,20 @@
 """
 This module handles queries to the ML model.
 """
+import json
 from datetime import datetime
+
+import requests
 import torch
+from joblib import load
+from loguru import logger
 from catboost import CatBoostClassifier
 from cjsc_ml.db.databases import \
     assets_db
 from cjsc_ml.db.repos.regulatory_doc import \
     RegulatoryDocRepo
 from cjsc_ml.http.schemas.message import \
-    MessageSchema
+    MessageSchema, MessageRequestType
 from fastapi import APIRouter
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, AutoModel
 from transformers import GenerationConfig
@@ -65,6 +70,8 @@ embedding_tokenizer = AutoTokenizer.from_pretrained(EMBEDDING_MODEL_NAME, local_
 ood_model = CatBoostClassifier()
 ood_model.load_model(OOD_PATH)
 
+# ood_model = load(OOD_PATH)
+
 retriever = Retriever(
     embedding_model,
     embedding_tokenizer,
@@ -74,7 +81,7 @@ retriever = Retriever(
     d=1024,
     k=1,
     batch_size=2,
-    device=DEVICE
+    device="cpu"
 )
 
 # retriever.add(
@@ -95,7 +102,7 @@ generation_config.seed = 42
 generation_config.max_length = 128
 
 generation_tokenizer = AutoTokenizer.from_pretrained(GENERATION_MODEL_NAME)
-generation_model = torch.compile(AutoModelForSeq2SeqLM.from_pretrained(GENERATION_MODEL_NAME, local_files_only=True))
+generation_model = AutoModelForSeq2SeqLM.from_pretrained(GENERATION_MODEL_NAME, local_files_only=True)
 
 chat = Chat(
     generation_model,
@@ -111,10 +118,48 @@ chat = Chat(
     response_model=MessageSchema,
 )
 def generate_response(msg: MessageSchema) -> MessageSchema:
-    return MessageSchema(
+    msg_json: str = json.dumps(
+        msg.model_dump(),
+        indent=4,
+        default=str,
+        ensure_ascii=True,
+    )
+
+    requests.post(
+        "https://backend.cjsc.seizure.icu/msg/save",
+        data=msg_json,
+    )
+
+    history = MessageSchema.model_validate_json(requests.get(
+        f"https://backend.cjsc.seizure.icu/msg/history",
+        params={"platform": msg.platform.value, "user_id": msg.user_id}
+    ).content).chat_history
+
+    logger.debug(history)
+
+    history = " ".join([el.request_text for el in history if el.request_text is not None][-1:])
+
+    request_type, answer = chat.answer(history)
+
+    answer = MessageSchema(
         platform=msg.platform,
         user_id=msg.user_id,
         timestamp=datetime.utcnow(),
         request_text=None,
-        response_text=chat.answer(msg.request_text)
+        response_text=answer,
+        request_type=MessageRequestType(request_type)
     )
+
+    msg_json: str = json.dumps(
+        answer.model_dump(),
+        indent=4,
+        default=str,
+        ensure_ascii=True,
+    )
+
+    requests.post(
+        "https://backend.cjsc.seizure.icu/msg/save",
+        data=msg_json,
+    )
+
+    return answer
