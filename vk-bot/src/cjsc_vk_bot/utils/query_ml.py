@@ -60,4 +60,8 @@ def query_ml(msg: MessageSchema) -> MessageSchema:
         f"Parsed a response from from ML Model: {response}"
     )
 
+    # Add link to the search engine
+    response.response_text = response.response_text + f"\n\nНе нашли то, что искали? \
+Попробуйте поиск: {se_link}"
+
     return response
