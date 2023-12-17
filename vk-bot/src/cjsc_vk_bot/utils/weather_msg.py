@@ -6,8 +6,8 @@ from datetime import datetime, UTC
 
 from cjsc_vk_bot import config
 
-from cjsc_vk_bot.http.schemas.event import \
-    CityEventSchema, CityEventsSchema
+from cjsc_vk_bot.http.schemas.weather import \
+    WeatherSchema
 
 from cjsc_vk_bot.http.schemas.message import \
     MessagePlatform, MessageRequestType, \
