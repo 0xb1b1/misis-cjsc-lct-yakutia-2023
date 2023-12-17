@@ -141,7 +141,7 @@ def run():
                 )
             ):
                 vk.messages.send(
-                    message=get_weather_message().response_text,
+                    message=get_weather_message(msg).response_text,
                     peer_id=message.peer_id,
                     random_id=get_random_id(),
                 )
