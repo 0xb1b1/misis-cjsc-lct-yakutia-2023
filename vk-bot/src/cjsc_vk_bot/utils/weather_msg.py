@@ -7,7 +7,7 @@ from datetime import datetime, UTC
 from cjsc_vk_bot import config
 
 from cjsc_vk_bot.http.schemas.weather import \
-    WeatherSchema
+    WeatherInfoSchema
 
 from cjsc_vk_bot.http.schemas.message import \
     MessagePlatform, MessageRequestType, \
