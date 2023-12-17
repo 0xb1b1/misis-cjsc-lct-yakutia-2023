@@ -9,7 +9,7 @@ from cjsc_vk_bot import config
 from cjsc_vk_bot.http.schemas.event import \
     CityEvent, CityEvents
 
-from cjsc_backend.http.schemas.message import \
+from cjsc_vk_bot.http.schemas.message import \
     MessagePlatform, MessageRequestType, \
     MessageSchema
 
