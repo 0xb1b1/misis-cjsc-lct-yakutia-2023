@@ -22,6 +22,26 @@ class MessageRequestType(str, Enum):
     TRASH = "trash"
 
 
+class MinifiedMessageSchema(BaseModel):
+    timestamp: datetime = Field(
+        default=datetime.utcnow(),
+        description="Timestamp of the message",
+    )
+
+    request_text: str | None = Field(
+        description="Request message text. None if of Response type",
+    )
+
+    response_text: str | None = Field(
+        description="Response message text. None if of Request type",
+    )
+
+    request_type: MessageRequestType | None = Field(
+        default=None,
+        description="Request type as detected by ML",
+    )
+
+
 class MessageSchema(BaseModel):
     platform: MessagePlatform = Field(
         default=MessagePlatform.VK,
@@ -48,4 +68,9 @@ class MessageSchema(BaseModel):
     request_type: MessageRequestType | None = Field(
         default=None,
         description="Request type as detected by ML",
+    )
+
+    chat_history: list[MinifiedMessageSchema] | None = Field(
+        default=None,
+        description="Chat history",
     )

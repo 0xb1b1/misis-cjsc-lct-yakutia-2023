@@ -8,7 +8,7 @@ import re
 import pandas as pd
 import numpy as np
 from datasets import Dataset
-
+from loguru import logger
 import scipy
 import sklearn
 
@@ -273,6 +273,8 @@ class Chat:
         return generated
 
     def answer(self, message):
+        logger.debug(message)
+
         torch.cuda.empty_cache()
 
         retrieved_samples = self.retriever.query(message)
