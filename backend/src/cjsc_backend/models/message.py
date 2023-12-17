@@ -48,5 +48,10 @@ class Message(BaseModel):
         description="Response message text. None if of Request type",
     )
 
-    # class Config:
-    #     use_enum_values = True
+    request_type: MessageRequestType | None = Field(
+        default=None,
+        description="Request type as detected by ML",
+    )
+
+    class Config:
+        use_enum_values = True
