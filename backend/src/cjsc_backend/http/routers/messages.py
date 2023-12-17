@@ -95,6 +95,12 @@ def get_history(platform: MessagePlatform, user_id: str):
     Return an empty MessageSchema with populated chat_history.
     """
     chat_history_uid: str = f"{user_id}@{platform.value}"
+
+    if chat_history_uid not in chat_history:
+        chat_history_user = []
+    else:
+        chat_history_user = list(chat_history[chat_history_uid])
+
     return MessageSchema(
         platform=MessagePlatform.VK,
         user_id="nulltype",
@@ -102,5 +108,5 @@ def get_history(platform: MessagePlatform, user_id: str):
         request_text=None,
         response_text=None,
         request_type=MessageRequestType.TRASH,
-        chat_history=list(chat_history[chat_history_uid]),
+        chat_history=chat_history_user,
     )
