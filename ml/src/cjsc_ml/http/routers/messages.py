@@ -10,7 +10,7 @@ from cjsc_ml.db.databases import \
 from cjsc_ml.db.repos.regulatory_doc import \
     RegulatoryDocRepo
 from cjsc_ml.http.schemas.message import \
-    MessageSchema
+    MessageSchema, MessageRequestType
 from fastapi import APIRouter
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, AutoModel
 from transformers import GenerationConfig
@@ -95,7 +95,7 @@ generation_config.seed = 42
 generation_config.max_length = 128
 
 generation_tokenizer = AutoTokenizer.from_pretrained(GENERATION_MODEL_NAME)
-generation_model = torch.compile(AutoModelForSeq2SeqLM.from_pretrained(GENERATION_MODEL_NAME, local_files_only=True))
+generation_model = AutoModelForSeq2SeqLM.from_pretrained(GENERATION_MODEL_NAME, local_files_only=True)
 
 chat = Chat(
     generation_model,
@@ -111,10 +111,12 @@ chat = Chat(
     response_model=MessageSchema,
 )
 def generate_response(msg: MessageSchema) -> MessageSchema:
+    request_type, answer = chat.answer(msg.request_text)
     return MessageSchema(
         platform=msg.platform,
         user_id=msg.user_id,
         timestamp=datetime.utcnow(),
         request_text=None,
-        response_text=chat.answer(msg.request_text)
+        response_text=answer,
+        request_type=MessageRequestType(request_type)
     )
