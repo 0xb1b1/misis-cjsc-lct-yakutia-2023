@@ -17,12 +17,19 @@ from cjsc_vk_bot.http.schemas.message import \
 def get_weather_message(msg: MessageSchema) -> MessageSchema:
     logger.debug("Quering Backend for Weather Message")
 
+    msg_json: str = json.dumps(
+        msg.model_dump(),
+        indent=4,
+        default=str,
+        ensure_ascii=True,
+    )
+
     response_raw = requests.post(
         urlparse.urljoin(
             config.BACKEND_URL,
             "/weather/get_weather_message",
         ),
-        data=msg,
+        data=msg_json,
     )
     logger.debug(
         f"Received a JSON response: {response_raw.content}"
