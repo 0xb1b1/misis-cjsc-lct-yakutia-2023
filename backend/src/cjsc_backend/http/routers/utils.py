@@ -43,7 +43,7 @@ repo = MessageRepo(database=backend_db)
 def translate_message(msg: MessageSchema):
     if msg.request_text is not None:
         msg.request_text = yt.translate(
-            "ru", "sah",
+            "sah", "ru",
             msg.request_text,
         )
 

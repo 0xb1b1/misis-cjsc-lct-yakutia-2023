@@ -110,8 +110,10 @@ def query_ml(
     """
     se_link = "https://ya.ru/search/?text=" + urlparse.quote(msg.request_text)
 
+    tr_msg = translate_message(msg, prefs)
+
     msg_json: str = json.dumps(
-        msg.model_dump(),
+        tr_msg.model_dump(),
         indent=4,
         default=str,
         ensure_ascii=True,
@@ -136,9 +138,9 @@ def query_ml(
 ({response_raw.status_code=}, {response_raw.content}), {exc}"
         )
         return MessageSchema(
-            platform=msg.platform,
-            user_id=msg.user_id,
-            timestamp=msg.timestamp,
+            platform=tr_msg.platform,
+            user_id=tr_msg.user_id,
+            timestamp=tr_msg.timestamp,
             request_text=None,
             response_text="Кажется что-то сломалось.\n\
 Но мы уже знаем и стараемся починить — напишите нам позже",
